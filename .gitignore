@@ -1,3 +1,7 @@
+#Dane
+dane_do_wyslania
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
