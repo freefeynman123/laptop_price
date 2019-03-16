@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import pandas as pd
 import warnings
@@ -7,18 +6,7 @@ from inspect import currentframe, getargvalues
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.model_selection import KFold
 
-
-def list_to_one_hot(data: pd.DataFrame, col_name: str, index_name: str) -> pd.DataFrame:
-    unlist = data.loc[:, col_name].apply(pd.Series) \
-    .set_index(data.loc[:, index_name]) \
-    .stack() \
-    .reset_index(level=1, drop=True) \
-    .to_frame(col_name)
-    one_hot = pd.get_dummies(unlist) \
-    .groupby(['index']).agg('sum')  \
-    .reset_index()
-    return one_hot
-
+from exceptions import *
 
 
 class TargetEncoder(BaseEstimator, TransformerMixin):
@@ -161,7 +149,7 @@ class TargetEncoder(BaseEstimator, TransformerMixin):
             missing_col = X_new.columns[X_new.isnull().any()].tolist()
             col_to_fill = list(set(self.columns).intersection(missing_col))
             for col in col_to_fill:
-                if X_new[col].dtype == 'category':
+                if X_new[col].dtype.name == 'category':
                     X_new[col] = X_new[col].cat.add_categories('NaNCategory')
             X_new[col_to_fill] = X_new[col_to_fill].fillna('NaNCategory')
 
