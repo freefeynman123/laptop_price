@@ -8,24 +8,31 @@ import sklearn
 from typing import Optional
 from functools import partial
 from collections import defaultdict
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import KFold
 from hyperopt import fmin, tpe, Trials, STATUS_OK
 
+"""
+This class implementation was based on 
+https://github.com/stasulam/tmle/tree/master/tmle
+repository.
+
+It was changed in order to suit regression problems
+"""
 
 class RegressorOptimizer(object):
 
     def __init__(
             self,
-            classifier: sklearn.base.ClassifierMixin,
+            regressor: sklearn.base.RegressorMixin,
             space: dict,
             metric: sklearn.metrics
     ) -> None:
-        """ClassifierOptimizer.
-        :param classifier: classifier.
+        """RegressorOptimizer.
+        :param regressor: regressor.
         :param space: space from which the hyperparameters values are drawn.
         :param metric: the metric used to assess the model's performance.
         """
-        self.classifier = classifier
+        self.regressor = regressor
         self.space = space
         self.metric = metric
 
@@ -108,34 +115,34 @@ class RegressorOptimizer(object):
     ) -> dict:
         """Evaluate hyperparameters.
         This method was designed to evaluate a given set of parameters in conditions
-        of unbalanced dataset (hence, `StratifiedKFold` was used). Furthermore, a decision
+        of continous dataset (hence, `KFold` was used). Furthermore, a decision
         was made to further penalize the overfitting (`overfit_penalty` simply adds some
         constant to loss function in order to discourage `TPE` from sampling similar sets
         of hyperparameters.
         :param X: array-like or spare matrix of shape = [n_samples, n_features].
         :param y: array-like, shape = [n_samples] or [n_samples, n_outputs].
-        :param clf_params: hyperparameters passed to given classifier.
+        :param clf_params: hyperparameters passed to given regressor.
         :param n_splits: number of splits used during cross-validation.
         :param overfit_penalty: additional penalty for overfitting (at training stage).
         :param verbose: print out some information for given experiment run.
         :return: dictionary with loss and information about metric values.
         """
-        self.classifier.set_params(**clf_params)
+        self.regressor.set_params(**clf_params)
         score_train, score_valid = [], []
-        for train_idx, valid_idx in StratifiedKFold(n_splits=n_splits).split(X, y):
+        for train_idx, valid_idx in KFold(n_splits=n_splits).split(X, y):
             x_train_fold, x_valid_fold = X[train_idx], X[valid_idx]
             y_train_fold, y_valid_fold = y[train_idx], y[valid_idx]
-            self.classifier.fit(x_train_fold, y_train_fold)
-            score_train.append(self.metric(y_train_fold, self.classifier.predict(x_train_fold)))
-            score_valid.append(self.metric(y_valid_fold, self.classifier.predict(x_valid_fold)))
+            self.regressor.fit(x_train_fold, y_train_fold)
+            score_train.append(self.metric(y_train_fold, self.regressor.predict(x_train_fold)))
+            score_valid.append(self.metric(y_valid_fold, self.regressor.predict(x_valid_fold)))
         mean_score_train = np.mean(score_train)
         mean_score_valid = np.mean(score_valid)
         if verbose:
             msg = 'Train: {score_train:.4f}, valid: {score_valid:.4f}'
             print(msg.format(score_train=mean_score_train, score_valid=mean_score_valid))
-        loss = 1 - mean_score_valid
+        loss = mean_score_valid
         if overfit_penalty:
-            loss += np.where(mean_score_train - mean_score_valid > overfit_penalty, 1, 0)
+            loss += np.where(mean_score_valid/mean_score_train - 1 > overfit_penalty, abs(mean_score_valid-mean_score_train)/2, 0)
         return {
             'loss': loss,
             'status': STATUS_OK,
