@@ -104,7 +104,7 @@ repository
 """
 
 def multipleplots(data, x, nrows=1, ncols=1, figsize=(8, 6), 
-                  plot_type='scatterplot', **params):
+                  plot_type='scatterplot', rotation=0, **params):
     """Paints any specified plot from the seaborn library multiple times.
 
     Parameters
@@ -124,6 +124,9 @@ def multipleplots(data, x, nrows=1, ncols=1, figsize=(8, 6),
     plot_type: string
         Specific plot from the seaborn library to be plotted multiple times
         against every given element from x.
+    
+    rotation: int
+        Degree of label's rotation for each plot
 
     params: dict
         Dictionary of optional parameters passed to the chosen seaborn plot.
@@ -144,6 +147,7 @@ def multipleplots(data, x, nrows=1, ncols=1, figsize=(8, 6),
         plt.sca(ax)
         try:
             getattr(sns, plot_type)(x[idx], data=data, **params)
+            plt.xticks(rotation=rotation)
         except AttributeError as e:
             print('Consider changing the "plot_type" parameter.')
             raise
