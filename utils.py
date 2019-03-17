@@ -16,10 +16,69 @@ def list_to_one_hot(data: pd.DataFrame, col_name: str, index_name: str) -> pd.Da
     .to_frame(col_name)
     one_hot = pd.get_dummies(unlist) \
     .groupby(['index']).agg('sum')  \
+    .astype('int') \
+    .astype('Int64') \
     .reset_index()
     return one_hot
 
+class ColumnSelector(BaseEstimator, TransformerMixin):
+    """
+    Taken from:
+    https://ramhiser.com/post/2018-04-16-building-scikit-learn-pipeline-
+    with-pandas-dataframe/
 
+    """
+    def __init__(self, columns):
+        self.columns = columns
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        """
+
+        """
+        assert isinstance(X, pd.DataFrame), \
+            'Input must be an instance of pandas.DataFrame()'
+
+        try:
+            return X[self.columns]
+        except KeyError:
+            cols_error = list(set(self.columns) - set(X.columns))
+            raise KeyError("C'mon, those columns ain't in the DataFrame: %s"
+                           % cols_error)
+
+
+class TypeSelector(BaseEstimator, TransformerMixin):
+    """
+    Taken from:
+    https://ramhiser.com/post/2018-04-16-building-scikit-learn-pipeline-
+    with-pandas-dataframe/
+
+    """
+    def __init__(self, col_type):
+        self.col_type = col_type
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        """
+
+        """
+        assert isinstance(X, pd.DataFrame), \
+            'Input must be an instance of pandas.DataFrame()'
+
+        return X.select_dtypes(include=[self.col_type])
+
+
+"""
+This function was taken from 
+
+https://github.com/mrtovsky/Paralytics/tree/master/paralytics
+
+repository
+"""
 
 class TargetEncoder(BaseEstimator, TransformerMixin):
     """Encodes categorical features with the corresponding target aggregated
