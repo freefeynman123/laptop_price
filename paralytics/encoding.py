@@ -6,7 +6,7 @@ from inspect import currentframe, getargvalues
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.model_selection import KFold
 
-from exceptions import *
+from .exceptions import *
 
 
 class TargetEncoder(BaseEstimator, TransformerMixin):
@@ -137,7 +137,7 @@ class TargetEncoder(BaseEstimator, TransformerMixin):
             getattr(self, 'cat_aggval_')
         except AttributeError:
             raise RuntimeError(
-                'Could not find the attribute.\nFitting is necessary before'
+                'Could not find the attribute.\nFitting is necessary before '
                 'you do the transformation!'
             )
         assert isinstance(X, pd.DataFrame), \
@@ -149,7 +149,7 @@ class TargetEncoder(BaseEstimator, TransformerMixin):
             missing_col = X_new.columns[X_new.isnull().any()].tolist()
             col_to_fill = list(set(self.columns).intersection(missing_col))
             for col in col_to_fill:
-                if X_new[col].dtype.name == 'category':
+                if X_new[col].dtype == 'category':
                     X_new[col] = X_new[col].cat.add_categories('NaNCategory')
             X_new[col_to_fill] = X_new[col_to_fill].fillna('NaNCategory')
 
