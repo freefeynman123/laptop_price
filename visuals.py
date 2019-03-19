@@ -9,6 +9,14 @@ from sklearn.model_selection import ShuffleSplit
 from typing import Union
 import seaborn as sns
 
+def plot_missing_values(data_missing, title="Title"):
+    fig, ax = plt.subplots(ncols=1, nrows=1, figsize=(8,6))
+    sns.barplot(data=data_missing[data_missing['Percent'] >0].reset_index(), x = 'index', 
+                y='Percent')
+    plt.xticks(rotation=70)
+    plt.title(title)
+    plt.show()
+
 """
 Taken from scikit-learn repository
 """
