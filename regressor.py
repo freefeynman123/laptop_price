@@ -45,7 +45,8 @@ class RegressorOptimizer(object):
             max_evals: int = 10,
             n_splits: int = 3,
             overfit_penalty: Optional[float] = None,
-            verbose: bool = True
+            verbose: bool = True,
+            **params
     ) -> Optional[dict]:
         """Find hyperparameters that minimize user-defined metric (`self.metric`).
         This method uses the Tree Parzen Estimator [1] to find hyperparameters values
@@ -79,7 +80,8 @@ class RegressorOptimizer(object):
                     X=X, y=y,
                     n_splits=n_splits,
                     overfit_penalty=overfit_penalty,
-                    verbose=verbose
+                    verbose=verbose,
+                    **params
                 ),
                 space=self.space,
                 algo=tpe.suggest,
@@ -111,7 +113,8 @@ class RegressorOptimizer(object):
             y: np.ndarray,
             n_splits: int = 3,
             overfit_penalty: Optional[float] = None,
-            verbose: bool = True
+            verbose: bool = True,
+            **params
     ) -> dict:
         """Evaluate hyperparameters.
         This method was designed to evaluate a given set of parameters in conditions
@@ -132,7 +135,7 @@ class RegressorOptimizer(object):
         for train_idx, valid_idx in KFold(n_splits=n_splits).split(X, y):
             x_train_fold, x_valid_fold = X[train_idx], X[valid_idx]
             y_train_fold, y_valid_fold = y[train_idx], y[valid_idx]
-            self.regressor.fit(x_train_fold, y_train_fold)
+            self.regressor.fit(x_train_fold, y_train_fold, **params)
             score_train.append(self.metric(y_train_fold, self.regressor.predict(x_train_fold)))
             score_valid.append(self.metric(y_valid_fold, self.regressor.predict(x_valid_fold)))
         mean_score_train = np.mean(score_train)
