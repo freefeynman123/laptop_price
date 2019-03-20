@@ -3,6 +3,18 @@ import numpy as np
 import pandas as pd
 import warnings
 
+def check_singular_columns(training, test):
+    print("Columns in the training set that are not found in the test set: ", 
+          [col for col in training.columns if col not in test.columns], sep="\n")
+    print("Columns in the test set that are not found in the training set: ", 
+          [col for col in test.columns if col not in training.columns], sep="\n")
+
+def type_preprocessing(data):
+    data.loc[:, 'ram_wielkosc'] = data.loc[:, 'ram_wielkosc'].apply(lambda x: float(x.split()[0]) if x is not None else x)
+    data.loc[:, 'cpu_rdzenie'] = data.loc[:, 'cpu_rdzenie'].apply(lambda x: float(x) if x is not None else x)
+    return data
+
+
 def missing_values(data):
     missing = data.isnull().sum()
     percent = data.isnull().sum()/data.isnull().count()
