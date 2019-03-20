@@ -86,8 +86,8 @@ class PSI(object):
             for index_null in expected.index.difference(actual.index):
                 actual[index_null] = self.corr
             for index_null in actual.index.difference(expected.index):
-                expted[index_null] = self.corr
-            sum(self._sub_psi(expected[index], actual[index], self.corr) for index in expected.index)
+                expected[index_null] = self.corr
+            psi_value = sum(self._sub_psi(expected[index], actual[index], self.corr) for index in expected.index)
         return psi_value
 
     def calculate_psi_report(
