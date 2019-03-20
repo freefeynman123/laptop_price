@@ -73,3 +73,13 @@ def calculate_psi(expected, actual, buckettype='bins', buckets=10, axis=0):
             psi_values[i] = psi(expected[:,i], actual[:,i], buckets)
         elif axis == 1:
             psi_values[i] = psi(expected[i,:], actual[i,:], buckets)
+
+    return psi_values
+
+def calculate_psi_report(expected, actual, columns, buckettype='bins', buckets=10, axis=0):
+    psi_values = [[calculate_psi(expected.loc[:, col], actual.loc[:, col], buckettype, buckets, axis), col] for col in columns]
+    return psi_values
+
+
+
+
