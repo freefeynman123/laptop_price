@@ -7,7 +7,6 @@ Paralytics package should be downloaded straight from repository with:
 <br />
 pip install git+https://github.com/mrtovsky/Paralytics.git@0.2.X
 <br />
-Predicting price of a laptop based on data scraped from allegro website.
 <br />
 Dictionary for column's names: <br />
 <br />
