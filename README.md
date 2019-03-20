@@ -1,16 +1,18 @@
 # allegro_task
-
-Dictionary for column's names:
-
-"rodzaj karty graficznej": "gpu_typ", 
-"rozdzielczość (piksele)": "rozdzielczosc", 
-"liczba rdzeni procesora": "cpu_rdzenie",
-"wielkość pamięci ram": "ram_wielkosc", 
-"system operacyjny": "os", 
-"typ dysku twardego": "hdd_typ", 
-"typ pamięci ram": "ram_typ", 
-"taktowanie bazowe procesora (ghz)": "cpu_ghz",
- "seria procesora": "cpu_seria", 
-"pojemność dysku (gb)": "hdd_rozmiar",
- "wielkość matrycy ": "matryca_wielkosc",
+<br />
+Predicting price of a laptop based on data scraped from allegro website.
+<br />
+Dictionary for column's names: <br />
+<br />
+"rodzaj karty graficznej": "gpu_typ", <br />
+"rozdzielczość (piksele)": "rozdzielczosc", <br />
+"liczba rdzeni procesora": "cpu_rdzenie", <br />
+"wielkość pamięci ram": "ram_wielkosc", <br />
+"system operacyjny": "os", <br />
+"typ dysku twardego": "hdd_typ", <br />
+"typ pamięci ram": "ram_typ", <br />
+"taktowanie bazowe procesora (ghz)": "cpu_ghz", <br />
+ "seria procesora": "cpu_seria", <br />
+"pojemność dysku (gb)": "hdd_rozmiar", <br />
+ "wielkość matrycy ": "matryca_wielkosc", <br />
 "buynow_price": "cena_kup_teraz"
